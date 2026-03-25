@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ballon Turbo - Royal Decoder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
+        body { background-color: #020617; color: #f1f5f9; font-family: 'Cairo', sans-serif; }
+        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(239, 68, 68, 0.2); }
+        input, textarea { background: #0f172a !important; border: 1px solid #1e293b !important; color: #fff !important; }
+        .badge { background: rgba(239, 68, 68, 0.2); color: #f87171; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; }
+    </style>
+</head>
+<body class="p-4 md:p-10">
+
+    <div class="max-w-5xl mx-auto">
+        <div class="flex justify-between items-center mb-12">
+            <h1 class="text-4xl font-black text-red-500 tracking-tighter">مفكك الشفرات الملكي</h1>
+            <a href="index.html" class="text-slate-500 hover:text-blue-400 transition italic">العودة للمصنع <i class="fas fa-arrow-left mr-2"></i></a>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-5 space-y-6">
+                <div class="glass p-6 rounded-3xl shadow-2xl border-red-500/30">
+                    <label class="block text-xs font-bold text-slate-500 mb-2 uppercase">الرابط المشفر</label>
+                    <textarea id="inputEnc" placeholder="الصق هنا..." class="w-full rounded-xl px-4 py-3 text-xs font-mono h-40 mb-4"></textarea>
+                    <label class="block text-xs font-bold text-slate-500 mb-2 uppercase">الرمز السري</label>
+                    <input type="password" id="secretKey" placeholder="كلمة السر..." class="w-full rounded-xl px-4 py-3 text-sm mb-6">
+                    <button onclick="decryptAndParse()" class="w-full bg-red-600 py-4 rounded-2xl text-white font-black hover:bg-red-500 transition shadow-lg">تحليل البيانات</button>
+                </div>
+            </div>
+
+            <div class="lg:col-span-7 space-y-6">
+                <div id="resultBox" class="glass p-6 rounded-3xl min-h-[400px] hidden">
+                    <h2 class="text-xl font-bold mb-6 text-green-400 border-b border-green-900/30 pb-4 italic">التحليل التقني المستخرج:</h2>
+                    <div id="analysisContent" class="space-y-4"></div>
+                </div>
+                <div id="placeholder" class="glass p-10 rounded-3xl text-center opacity-40">
+                    <i class="fas fa-satellite-dish text-6xl mb-4"></i>
+                    <p>أدخل البيانات للبدء في الاستخراج</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function decryptAndParse() {
+            const input = document.getElementById('inputEnc').value.trim();
+            const key = document.getElementById('secretKey').value || "ballon";
+            try {
+                const dec = decodeURIComponent(escape(atob(input)));
+                const parts = dec.split("::");
+                if (parts[0] !== key) return alert("رمز سري خاطئ!");
+                
+                const master = parts[1];
+                const content = document.getElementById('analysisContent');
+                content.innerHTML = "";
+
+                const mainPart = master.split("|servers=")[0];
+                render(mainPart, "u", "السيرفر الرئيسي");
+
+                if (master.includes("|servers=")) {
+                    master.split("|servers=")[1].split(",").forEach((s, i) => render(s, `u${i+1}`, `سيرفر بديل ${i+1}`));
+                }
+                document.getElementById('resultBox').classList.remove('hidden');
+                document.getElementById('placeholder').classList.add('hidden');
+            } catch (e) { alert("فشل التحليل!"); }
+        }
+        function render(full, id, title) {
+            const url = full.split("|")[0];
+            const meta = full.split("|").slice(1);
+            let metaHtml = meta.map(m => `<span class="badge">${m}</span>`).join(" ");
+            document.getElementById('analysisContent').innerHTML += `
+                <div class="glass p-4 rounded-2xl border-r-4 border-red-500">
+                    <h3 class="text-blue-400 font-bold text-sm">${title} [${id}]</h3>
+                    <p class="text-[10px] text-slate-300 font-mono mt-2 break-all">${url}</p>
+                    <div class="mt-3 flex flex-wrap gap-2">${metaHtml}</div>
+                </div>`;
+        }
+    </script>
+</body>
+</html>
