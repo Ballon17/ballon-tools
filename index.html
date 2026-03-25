@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ballon Turbo - Supreme Link Factory</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
+        body { background-color: #020617; color: #f1f5f9; font-family: 'Cairo', sans-serif; }
+        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(59, 130, 246, 0.2); }
+        .server-card { border-right: 4px solid #3b82f6; transition: 0.3; }
+        input, select, textarea { background: #0f172a !important; border: 1px solid #1e293b !important; color: #fff !important; }
+    </style>
+</head>
+<body class="p-4 md:p-10">
+
+    <div class="max-w-6xl mx-auto">
+        <div class="flex justify-between items-center mb-8">
+            <div class="text-right">
+                <h1 class="text-4xl font-black text-blue-500 tracking-tighter">مصنع الروابط V200</h1>
+                <p class="text-slate-500">نظام Ballon Turbo لدمج وتشفير السيرفرات</p>
+            </div>
+            <a href="decoder.html" class="bg-red-900/20 text-red-400 px-6 py-2 rounded-full border border-red-900/50 hover:bg-red-600 hover:text-white transition">
+                <i class="fas fa-unlock-alt ml-2"></i>مفكك الشفرات
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- المدخلات -->
+            <div class="lg:col-span-5 space-y-6">
+                <div class="glass p-6 rounded-3xl shadow-2xl">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1 uppercase">رابط البث (URL) *</label>
+                            <input type="text" id="url" placeholder="http://server.com/live.m3u8" class="w-full rounded-xl px-4 py-3 text-sm">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="text" id="referer" placeholder="Referer" class="w-full rounded-xl px-4 py-2 text-sm">
+                            <input type="text" id="origin" placeholder="Origin" class="w-full rounded-xl px-4 py-2 text-sm">
+                        </div>
+                        <input type="text" id="cookie" placeholder="Cookie" class="w-full rounded-xl px-4 py-2 text-sm">
+                        <input type="text" id="ua" placeholder="User-Agent (يدوي)" class="w-full rounded-xl px-4 py-2 text-sm">
+                        <div class="bg-blue-900/10 p-4 rounded-2xl border border-blue-800/30">
+                            <label class="block text-xs font-bold text-blue-400 mb-2 uppercase">حماية ClearKey</label>
+                            <input type="text" id="drm" placeholder="KID:KEY" class="w-full rounded-xl px-4 py-2 text-sm">
+                        </div>
+                        <button onclick="addServer()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-2xl transition-all shadow-lg flex justify-center items-center gap-2">
+                            <i class="fas fa-server"></i> تثبيت السيرفر في القائمة
+                        </button>
+                    </div>
+                </div>
+                <div class="glass p-6 rounded-3xl">
+                    <label class="block text-xs font-bold text-red-400 mb-2 uppercase">الرمز السري (Security Key)</label>
+                    <input type="password" id="secretKey" placeholder="لحماية الرابط..." class="w-full rounded-xl px-4 py-3 text-sm">
+                </div>
+            </div>
+
+            <!-- القائمة والنتيجة -->
+            <div class="lg:col-span-7 space-y-6">
+                <div class="glass p-6 rounded-3xl min-h-[250px]">
+                    <h2 class="text-lg font-bold mb-4 text-green-400 flex justify-between">
+                        <span>قائمة السيرفرات</span>
+                        <span id="serverCount" class="text-xs">0 سيرفر</span>
+                    </h2>
+                    <div id="serverList" class="space-y-2"></div>
+                </div>
+                <div class="glass p-6 rounded-3xl space-y-4">
+                    <button onclick="generateFinalPayload()" class="w-full bg-gradient-to-l from-blue-600 to-indigo-600 py-5 rounded-2xl text-white font-black text-xl hover:scale-105 transition">توليد المصفوفة النهائية</button>
+                    <textarea id="outputEnc" readonly placeholder="الرابط المشفر سيظهر هنا..." class="w-full bg-slate-950 rounded-2xl p-4 text-xs font-mono text-green-400 h-32 border border-slate-800 focus:outline-none"></textarea>
+                    <button onclick="copy('outputEnc')" class="w-full text-slate-500 hover:text-white text-sm"><i class="fas fa-copy ml-2"></i>نسخ الرابط المشفر</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let servers = [];
+        function addServer() {
+            const u = document.getElementById('url').value;
+            if (!u) return alert("الرابط مطلوب!");
+            servers.push({
+                url: u, referer: document.getElementById('referer').value,
+                origin: document.getElementById('origin').value, cookie: document.getElementById('cookie').value,
+                ua: document.getElementById('ua').value, drm: document.getElementById('drm').value
+            });
+            render();
+            document.getElementById('url').value = ""; document.getElementById('drm').value = "";
+        }
+        function render() {
+            const list = document.getElementById('serverList');
+            list.innerHTML = "";
+            document.getElementById('serverCount').innerText = servers.length + " سيرفرات";
+            servers.forEach((s, i) => {
+                list.innerHTML += `<div class="glass p-3 rounded-xl flex justify-between items-center border-r-4 border-blue-500 mb-2">
+                    <span class="text-xs truncate max-w-[80%]">${s.url}</span>
+                    <button onclick="servers.splice(${i},1);render()" class="text-red-500"><i class="fas fa-trash"></i></button>
+                </div>`;
+            });
+        }
+        function generateFinalPayload() {
+            if (servers.length === 0) return alert("أضف سيرفرات!");
+            let master = ""; let others = [];
+            servers.forEach((s, i) => {
+                let entry = s.url;
+                if (s.drm) entry += `?|drmScheme=clearkey&drmLicense=${s.drm}`;
+                if (s.referer) entry += `|Referer=${s.referer}`;
+                if (s.origin) entry += `|Origin=${s.origin}`;
+                if (s.cookie) entry += `|Cookie=${s.cookie}`;
+                if (s.ua) entry += `|User-Agent=${s.ua}`;
+                if (i === 0) master = entry; else others.push(entry);
+            });
+            if (others.length > 0) master += `|servers=${others.join(',')}`;
+            const key = document.getElementById('secretKey').value || "ballon";
+            document.getElementById('outputEnc').value = btoa(unescape(encodeURIComponent(key + "::" + master)));
+        }
+        function copy(id) {
+            const t = document.getElementById(id); t.select(); document.execCommand('copy');
+            alert("تم النسخ!");
+        }
+    </script>
+</body>
+</html>
