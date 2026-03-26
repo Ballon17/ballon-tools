@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ballon Turbo - Supreme Link Factory V310</title>
+    <title>Ballon Turbo - Supreme Factory V320</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -11,26 +11,24 @@
         body { background-color: #020617; color: #f8fafc; font-family: 'Cairo', sans-serif; }
         .imperial-glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(15px); border: 1px solid rgba(59, 130, 246, 0.2); }
         .btn-magic { background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%); transition: 0.4s; }
-        .btn-magic:hover { transform: scale(1.02); filter: brightness(1.2); box-shadow: 0 0 20px rgba(79, 70, 229, 0.4); }
+        .btn-magic:hover { transform: scale(1.01); filter: brightness(1.2); box-shadow: 0 0 20px rgba(79, 70, 229, 0.4); }
         input, textarea { background: #0f172a !important; border: 1px solid #1e293b !important; color: #fff !important; }
-        input:focus { border-color: #3b82f6 !important; outline: none; box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); }
+        textarea:focus { border-color: #3b82f6 !important; outline: none; }
     </style>
 </head>
 <body class="p-4 md:p-10">
 
     <div class="max-w-6xl mx-auto">
         <header class="flex justify-between items-center mb-10">
-            <h1 class="text-4xl font-black text-blue-500 tracking-tighter">مصنع الروابط V310</h1>
-            <a href="decoder.html" class="text-red-400 border border-red-900/50 px-6 py-2 rounded-2xl hover:bg-red-600 hover:text-white transition-all font-bold">
-                <i class="fas fa-unlock-alt ml-2"></i>مفكك الشفرات
-            </a>
+            <h1 class="text-4xl font-black text-blue-500 tracking-tighter">مصنع الروابط V320</h1>
+            <a href="decoder.html" class="text-red-400 border border-red-900/50 px-6 py-2 rounded-2xl hover:bg-red-600 hover:text-white transition-all font-bold">المفكك الملكي</a>
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <!-- المدخلات -->
+            <!-- قسم المدخلات -->
             <div class="lg:col-span-5 space-y-6">
                 <div class="imperial-glass p-6 rounded-[2rem] shadow-2xl">
-                    <h2 class="text-lg font-bold mb-4 text-blue-400"><i class="fas fa-plus-circle ml-2"></i>إعداد سيرفر</h2>
+                    <h2 class="text-lg font-bold mb-4 text-blue-400"><i class="fas fa-plus-circle ml-2"></i>إعداد السيرفر</h2>
                     <div class="space-y-4">
                         <input type="text" id="url" placeholder="رابط البث (URL) *" class="w-full rounded-xl px-4 py-3 text-sm">
                         <div class="grid grid-cols-2 gap-3">
@@ -40,39 +38,44 @@
                         <input type="text" id="cookie" placeholder="Cookie" class="w-full rounded-xl px-4 py-2 text-xs">
                         <input type="text" id="ua" placeholder="User-Agent (يدوي)" class="w-full rounded-xl px-4 py-2 text-xs">
                         <input type="text" id="drm" placeholder="ClearKey (KID:KEY)" class="w-full rounded-xl px-4 py-2 text-xs font-mono text-center">
-                        <button onclick="addServer()" class="w-full py-3 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-500 transition">تثبيت السيرفر في القائمة</button>
+                        <button onclick="addServer()" class="w-full py-3 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-500 transition">تثبيت السيرفر</button>
                     </div>
                 </div>
 
-                <!-- الرمز السري (القفل النووي) -->
                 <div class="imperial-glass p-6 rounded-[2rem] border-red-500/20">
-                    <label class="block text-xs font-bold text-red-400 mb-2 uppercase tracking-widest"><i class="fas fa-key ml-1"></i> الرمز السري للتشفير (Security Key)</label>
-                    <input type="password" id="secretKey" placeholder="ادخل كلمة سر لحماية المصفوفة..." class="w-full rounded-xl px-4 py-3 text-sm border-red-500/30">
-                    <p class="text-[10px] text-slate-500 mt-2 italic">* لن يعمل الرابط في المفكك بدون هذه الكلمة.</p>
+                    <label class="block text-xs font-bold text-red-400 mb-2 uppercase">الرمز السري (Security Key)</label>
+                    <input type="text" id="secretKey" placeholder="مثال: 1717" class="w-full rounded-xl px-4 py-3 text-sm border-red-500/30">
                 </div>
 
-                <div class="imperial-glass p-4 rounded-2xl border-dashed border-2 border-blue-500/20">
-                    <div id="serverList" class="space-y-2 max-h-40 overflow-y-auto"></div>
-                </div>
+                <div id="serverList" class="space-y-2 max-h-40 overflow-y-auto"></div>
             </div>
 
-            <!-- النتائج -->
+            <!-- قسم النتائج -->
             <div class="lg:col-span-7 space-y-6">
-                <div class="imperial-glass p-8 rounded-[2.5rem] space-y-6 shadow-2xl">
+                <div class="imperial-glass p-8 rounded-[2.5rem] space-y-6 shadow-2xl border-blue-500/30">
                     <button onclick="generateFinalPayload()" class="w-full py-5 rounded-2xl btn-magic text-white font-black text-2xl shadow-xl">
-                        توليد المصفوفة الإمبراطورية
+                        توليد الكود الإمبراطوري
                     </button>
 
-                    <div>
-                        <label class="block text-xs font-bold text-blue-400 mb-2 uppercase">رابط التشغيل المباشر (Intent)</label>
-                        <textarea id="outputIntent" readonly class="w-full bg-slate-950 rounded-2xl p-4 text-[10px] font-mono text-blue-300 h-24 border border-blue-900/30 outline-none"></textarea>
-                        <button onclick="copy('outputIntent')" class="mt-2 text-xs text-slate-500 hover:text-white"><i class="fas fa-copy ml-1"></i>نسخ الرابط</button>
+                    <!-- النتيجة الجديدة: كود الزر للمواقع -->
+                    <div class="space-y-2">
+                        <label class="block text-xs font-black text-yellow-500 uppercase flex items-center gap-2">
+                            <i class="fas fa-code"></i> كود التشغيل للمواقع (On-Click Code)
+                        </label>
+                        <div class="relative">
+                            <textarea id="outputOnClick" readonly class="w-full bg-slate-950 rounded-2xl p-4 text-[10px] font-mono text-yellow-400 h-28 border border-yellow-900/30 outline-none leading-relaxed"></textarea>
+                            <button onclick="copy('outputOnClick')" class="absolute top-3 left-3 text-slate-500 hover:text-white bg-slate-800 p-2 rounded-lg"><i class="fas fa-copy"></i></button>
+                        </div>
+                        <p class="text-[9px] text-slate-500 italic">* هذا الكود يتم وضعه داخل وسم زر أو صورة في موقعك.</p>
                     </div>
 
-                    <div>
-                        <label class="block text-xs font-bold text-green-500 mb-2 uppercase">المصفوفة المشفرة بالرمز السري</label>
-                        <textarea id="outputEnc" readonly class="w-full bg-slate-950 rounded-2xl p-4 text-[10px] font-mono text-green-500 h-24 border border-slate-800 outline-none"></textarea>
-                        <button onclick="copy('outputEnc')" class="mt-2 text-xs text-slate-500 hover:text-white"><i class="fas fa-copy ml-1"></i>نسخ المصفوفة</button>
+                    <!-- النتيجة القديمة: المصفوفة المشفرة -->
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-green-500 uppercase tracking-widest">المصفوفة المشفرة الصافية</label>
+                        <div class="relative">
+                            <textarea id="outputEnc" readonly class="w-full bg-slate-950 rounded-2xl p-4 text-[10px] font-mono text-green-500 h-20 border border-slate-800 outline-none"></textarea>
+                            <button onclick="copy('outputEnc')" class="absolute top-3 left-3 text-slate-500 hover:text-white bg-slate-800 p-2 rounded-lg"><i class="fas fa-copy"></i></button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -81,6 +84,7 @@
 
     <script>
         let servers = [];
+
         function addServer() {
             const u = document.getElementById('url').value;
             if (!u) return alert("الرابط مطلوب!");
@@ -92,20 +96,22 @@
             render();
             document.getElementById('url').value = ""; document.getElementById('drm').value = "";
         }
+
         function render() {
             const list = document.getElementById('serverList');
             list.innerHTML = "";
             servers.forEach((s, i) => {
-                list.innerHTML += `<div class="bg-slate-900/50 p-2 rounded-lg flex justify-between items-center text-[10px] border border-slate-800">
+                list.innerHTML += `<div class="imperial-glass p-3 rounded-xl flex justify-between items-center text-[10px] border-r-4 border-blue-500 mb-2">
                     <span class="truncate max-w-[80%] text-blue-300">${s.url}</span>
                     <button onclick="servers.splice(${i},1);render()" class="text-red-500 px-2"><i class="fas fa-trash"></i></button>
                 </div>`;
             });
         }
+
         function generateFinalPayload() {
             if (servers.length === 0) return alert("أضف سيرفرات أولاً!");
             const key = document.getElementById('secretKey').value;
-            if (!key) return alert("يرجى إدخال رمز سري لحماية الرابط!");
+            if (!key) return alert("يرجى إدخال الرمز السري!");
 
             let master = "";
             let others = [];
@@ -120,16 +126,21 @@
             });
             if (others.length > 0) master += `|servers=${others.join(',')}`;
 
-            // التشفير المعتمد على الرمز السري (SecretKey::Data)
-            const finalData = key + "::" + master;
-            document.getElementById('outputEnc').value = btoa(unescape(encodeURIComponent(finalData)));
-            
-            const encodedUrl = encodeURIComponent(master);
-            document.getElementById('outputIntent').value = `intent://open?url=${encodedUrl}#Intent;scheme=ballon;package=com.ballon.player;end`;
+            // 1. تشفير البيانات (SecretKey::Data)
+            const finalRaw = key + "::" + master;
+            const base64Encoded = btoa(unescape(encodeURIComponent(finalRaw)));
+
+            // 2. عرض المصفوفة المشفرة الصافية
+            document.getElementById('outputEnc').value = base64Encoded;
+
+            // 3. توليد كود On-Click للمواقع (الذي طلبته بالضبط)
+            const onClickCode = `onclick="location.href='intent://open?url=${base64Encoded}#Intent;scheme=ballon;package=com.ballon.player;end'"`;
+            document.getElementById('outputOnClick').value = onClickCode;
         }
+
         function copy(id) {
             const t = document.getElementById(id); t.select(); document.execCommand('copy');
-            alert("تم النسخ بنجاح!");
+            alert("تم نسخ الكود بنجاح!");
         }
     </script>
 </body>
