@@ -14,7 +14,6 @@
         .btn-magic:hover { transform: scale(1.01); filter: brightness(1.2); box-shadow: 0 0 20px rgba(79, 70, 229, 0.4); }
         input, textarea, select { background: #0f172a !important; border: 1px solid #1e293b !important; color: #fff !important; appearance: none; }
         textarea:focus, select:focus { border-color: #3b82f6 !important; outline: none; }
-        option { background: #0f172a; color: #fff; }
     </style>
 </head>
 <body class="p-4 md:p-10">
@@ -34,77 +33,57 @@
                 <div class="imperial-glass p-6 rounded-[2rem] shadow-2xl">
                     <h2 class="text-lg font-bold mb-4 text-blue-400"><i class="fas fa-plus-circle ml-2"></i>إعداد السيرفر</h2>
                     <div class="space-y-4">
-                        <!-- الرابط والمحرك -->
-                        <div class="grid grid-cols-1 gap-3">
-                            <input type="text" id="url" placeholder="رابط البث (URL) *" class="w-full rounded-xl px-4 py-3 text-sm">
-                            <select id="engine" class="w-full rounded-xl px-4 py-3 text-sm font-bold text-blue-300 cursor-pointer">
-                                <option value="auto">المحرك: تلقائي (Auto)</option>
-                                <option value="exo">المحرك: Exo Player (HLS/DASH)</option>
-                                <option value="vlc">المحرك: VLC (TS/RTSP/RTMP)</option>
-                                <option value="shaka">المحرك: Shaka (DRM/MPD)</option>
-                                <option value="browser">المحرك: Browser (Web View)</option>
-                            </select>
-                        </div>
-
-                        <!-- الهيدرز -->
+                        <input type="text" id="url" placeholder="رابط البث (URL) *" class="w-full rounded-xl px-4 py-3 text-sm">
+                        <select id="engine" class="w-full rounded-xl px-4 py-3 text-sm font-bold text-blue-300">
+                            <option value="auto">المحرك: تلقائي (Auto)</option>
+                            <option value="exo">المحرك: Exo Player</option>
+                            <option value="vlc">المحرك: VLC</option>
+                        </select>
+                        
                         <div class="grid grid-cols-2 gap-3">
                             <input type="text" id="referer" placeholder="Referer" class="w-full rounded-xl px-4 py-2 text-xs">
-                            <input type="text" id="origin" placeholder="Origin" class="w-full rounded-xl px-4 py-2 text-xs">
-                        </div>
-                        <input type="text" id="cookie" placeholder="Cookie" class="w-full rounded-xl px-4 py-2 text-xs">
-                        <input type="text" id="ua" placeholder="User-Agent (تلقائي إذا ترك فارغاً)" class="w-full rounded-xl px-4 py-2 text-xs">
-                        
-                        <!-- قسم التشفير DRM -->
-                        <div class="p-4 bg-slate-950/50 rounded-2xl border border-slate-800 space-y-3">
-                            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">إعدادات الحماية (DRM)</label>
-                            <select id="drmType" class="w-full rounded-xl px-4 py-2 text-xs font-bold" onchange="updateDrmPlaceholder()">
-                                <option value="none">بدون تشفير</option>
-                                <option value="clearkey">ClearKey (KID:KEY)</option>
-                                <option value="widevine">Widevine (License URL)</option>
-                                <option value="playready">PlayReady (License URL)</option>
-                            </select>
-                            <input type="text" id="drmData" placeholder="بيانات التشفير" class="w-full rounded-xl px-4 py-2 text-xs font-mono text-center border-dashed">
+                            <input type="text" id="ua" placeholder="User-Agent" class="w-full rounded-xl px-4 py-2 text-xs">
                         </div>
 
-                        <button onclick="addServer()" class="w-full py-3 rounded-xl bg-blue-600 text-white font-black hover:bg-blue-500 transition shadow-lg shadow-blue-900/20">
+                        <div class="p-4 bg-slate-950/50 rounded-2xl border border-slate-800 space-y-3">
+                            <select id="drmType" class="w-full rounded-xl px-4 py-2 text-xs font-bold" onchange="updateDrmPlaceholder()">
+                                <option value="none">بدون تشفير</option>
+                                <option value="clearkey">ClearKey</option>
+                                <option value="widevine">Widevine</option>
+                            </select>
+                            <input type="text" id="drmData" placeholder="بيانات التشفير" class="w-full rounded-xl px-4 py-2 text-xs font-mono text-center">
+                        </div>
+
+                        <button onclick="addServer()" class="w-full py-3 rounded-xl bg-blue-600 text-white font-black hover:bg-blue-500 transition">
                             تثبيت السيرفر في القائمة
                         </button>
                     </div>
                 </div>
 
+                <!-- خانة الرمز السري - هنا يمكنك وضع أي رقم -->
                 <div class="imperial-glass p-6 rounded-[2rem] border-red-500/20">
-                    <label class="block text-xs font-bold text-red-400 mb-2 uppercase">الرمز السري للفك (Security Key)</label>
-                    <input type="text" id="secretKey" placeholder="مثال: 1717" class="w-full rounded-xl px-4 py-3 text-sm border-red-500/30">
+                    <label class="block text-xs font-bold text-red-400 mb-2 uppercase">الرمز السري الخاص بك (أي رقم)</label>
+                    <input type="text" id="secretKey" placeholder="أدخل رمز فك التشفير هنا..." class="w-full rounded-xl px-4 py-3 text-sm border-red-500/30">
                 </div>
 
-                <div id="serverList" class="space-y-2 max-h-40 overflow-y-auto pr-2"></div>
+                <div id="serverList" class="space-y-2 max-h-40 overflow-y-auto"></div>
             </div>
 
             <!-- قسم النتائج -->
             <div class="lg:col-span-7 space-y-6">
-                <div class="imperial-glass p-8 rounded-[2.5rem] space-y-6 shadow-2xl border-blue-500/30">
-                    <button onclick="generateFinalPayload()" class="w-full py-5 rounded-2xl btn-magic text-white font-black text-2xl shadow-xl">
+                <div class="imperial-glass p-8 rounded-[2.5rem] space-y-6 shadow-2xl">
+                    <button onclick="generateFinalPayload()" class="w-full py-5 rounded-2xl btn-magic text-white font-black text-2xl">
                         توليد الكود الإمبراطوري
                     </button>
 
-                    <!-- كود التشغيل للمواقع -->
                     <div class="space-y-2">
-                        <label class="block text-xs font-black text-yellow-500 uppercase flex items-center gap-2">
-                            <i class="fas fa-code"></i> كود التشغيل للمواقع (On-Click Code)
-                        </label>
-                        <div class="relative">
-                            <textarea id="outputOnClick" readonly class="w-full bg-slate-950 rounded-2xl p-4 text-[10px] font-mono text-yellow-400 h-28 border border-yellow-900/30 outline-none leading-relaxed"></textarea>
-                            <button onclick="copy('outputOnClick')" class="absolute top-3 left-3 text-slate-500 hover:text-white bg-slate-800 p-2 rounded-lg"><i class="fas fa-copy"></i></button>
-                        </div>
+                        <label class="block text-xs font-black text-yellow-500 uppercase">كود التشغيل (On-Click)</label>
+                        <textarea id="outputOnClick" readonly class="w-full bg-slate-950 rounded-2xl p-4 text-[10px] font-mono text-yellow-400 h-28 border border-yellow-900/30"></textarea>
                     </div>
 
-                    <!-- المصفوفة المشفرة -->
                     <div class="space-y-2">
-                        <label class="block text-xs font-bold text-green-500 uppercase tracking-widest">المصفوفة المشفرة الصافية</label>
-                        <div class="relative">
-                            <textarea id="outputEnc" readonly class="w-full bg-slate-950 rounded-2xl p-4 text-[10px] font-mono text-green-500 h-20 border border-slate-800 outline-none"></textarea>
-                            <button onclick="copy('outputEnc')" class="absolute top-3 left-3 text-slate-500 hover:text-white bg-slate-800 p-2 rounded-lg"><i class="fas fa-copy"></i></button>
-                        </div>
+                        <label class="block text-xs font-bold text-green-500 uppercase">المصفوفة المشفرة</label>
+                        <textarea id="outputEnc" readonly class="w-full bg-slate-950 rounded-2xl p-4 text-[10px] font-mono text-green-500 h-20 border border-slate-800"></textarea>
                     </div>
                 </div>
             </div>
@@ -117,100 +96,66 @@
         function updateDrmPlaceholder() {
             const type = document.getElementById('drmType').value;
             const input = document.getElementById('drmData');
-            if(type === 'clearkey') input.placeholder = "KID:KEY (مثال: 264e...:4742...)";
-            else if(type === 'none') input.placeholder = "لا يتطلب بيانات";
-            else input.placeholder = "رابط الترجمة (License URL)";
+            input.placeholder = (type === 'clearkey') ? "KID:KEY" : (type === 'none' ? "لا يتطلب بيانات" : "License URL");
         }
 
         function addServer() {
             const u = document.getElementById('url').value;
             if (!u) return alert("الرابط مطلوب!");
-            
             servers.push({
                 url: u,
                 engine: document.getElementById('engine').value,
                 referer: document.getElementById('referer').value,
-                origin: document.getElementById('origin').value,
-                cookie: document.getElementById('cookie').value,
                 ua: document.getElementById('ua').value,
                 drmType: document.getElementById('drmType').value,
                 drmData: document.getElementById('drmData').value
             });
-            
             render();
-            // تصفير المدخلات
             document.getElementById('url').value = ""; 
-            document.getElementById('drmData').value = "";
         }
 
         function render() {
             const list = document.getElementById('serverList');
-            list.innerHTML = "";
-            servers.forEach((s, i) => {
-                list.innerHTML += `
-                <div class="imperial-glass p-3 rounded-xl flex justify-between items-center text-[10px] border-r-4 border-blue-500 mb-2">
-                    <div class="flex flex-col gap-1 overflow-hidden">
-                        <span class="text-blue-500 font-bold uppercase text-[8px]">${s.engine} engine</span>
-                        <span class="truncate text-blue-300">${s.url}</span>
-                    </div>
-                    <button onclick="servers.splice(${i},1);render()" class="text-red-500 px-2 hover:text-red-300"><i class="fas fa-trash"></i></button>
-                </div>`;
-            });
+            list.innerHTML = servers.map((s, i) => `
+                <div class="imperial-glass p-3 rounded-xl flex justify-between items-center text-[10px] mb-2 border-r-4 border-blue-500">
+                    <span class="truncate">${s.url}</span>
+                    <button onclick="servers.splice(${i},1);render()" class="text-red-500"><i class="fas fa-trash"></i></button>
+                </div>
+            `).join('');
         }
 
         function generateFinalPayload() {
+            const keyInput = document.getElementById('secretKey').value;
             if (servers.length === 0) return alert("أضف سيرفرات أولاً!");
-            const key = document.getElementById('secretKey').value;
-            if (!key) return alert("يرجى إدخال الرمز السري!");
+            if (!keyInput) return alert("يرجى إدخال الرمز السري الذي تريده!");
 
-            let formattedServers = [];
-
-            servers.forEach((s) => {
-                // 1. بناء الرابط الأساسي مع المحرك
+            // تجميع بيانات السيرفرات
+            let formattedServers = servers.map(s => {
                 let entry = (s.engine === "auto") ? s.url : `${s.engine} :: ${s.url}`;
-
-                // 2. إضافة بيانات التشفير DRM
-                if (s.drmType !== "none" && s.drmData) {
-                    if (s.drmType === "clearkey") {
-                        // صيغة ClearKey: url|KID:KEY
-                        entry += `|${s.drmData}`;
-                    } else {
-                        // صيغة Widevine/PlayReady: url|drm=type:url
-                        entry += `|drm=${s.drmType}:${s.drmData}`;
-                    }
-                }
-
-                // 3. إضافة الهيدرز
+                if (s.drmType !== "none" && s.drmData) entry += `|drm=${s.drmType}:${s.drmData}`;
                 if (s.referer) entry += `|Referer=${s.referer}`;
-                if (s.origin) entry += `|Origin=${s.origin}`;
-                if (s.cookie) entry += `|Cookie=${s.cookie}`;
                 if (s.ua) entry += `|User-Agent=${s.ua}`;
-
-                formattedServers.push(entry);
+                return entry;
             });
 
-            // بناء مصفوفة السيرفرات (المحرك الأول والباقي في servers=)
             let master = formattedServers[0];
             if (formattedServers.length > 1) {
-                const others = formattedServers.slice(1);
-                master += `|servers=${others.join(',')}`;
+                master += `|servers=${formattedServers.slice(1).join(',')}`;
             }
 
-            // تشفير البيانات (SecretKey::Data)
-            const finalRaw = key + "::" + master;
-            const base64Encoded = btoa(unescape(encodeURIComponent(finalRaw)));
+            // التشفير باستخدام الرمز السري المدخل (أياً كان)
+            // الصيغة: الرمز::البيانات ثم تحويل الكل لـ Base64
+            const combinedData = keyInput + "::" + master;
+            
+            // تحويل النص إلى Base64 مع دعم اللغة العربية (UTF-8)
+            const base64Encoded = btoa(encodeURIComponent(combinedData).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+                return String.fromCharCode('0x' + p1);
+            }));
 
-            // عرض النتائج
             document.getElementById('outputEnc').value = base64Encoded;
-            const onClickCode = `onclick="location.href='intent://open?url=${base64Encoded}#Intent;scheme=ballon;package=com.ballon.player;end'"`;
-            document.getElementById('outputOnClick').value = onClickCode;
-        }
-
-        function copy(id) {
-            const t = document.getElementById(id);
-            t.select();
-            document.execCommand('copy');
-            alert("تم النسخ!");
+            document.getElementById('outputOnClick').value = `onclick="location.href='intent://open?url=${base64Encoded}#Intent;scheme=ballon;package=com.ballon.player;end'"`;
+            
+            alert("تم التوليد بنجاح باستخدام الرمز: " + keyInput);
         }
     </script>
 </body>
